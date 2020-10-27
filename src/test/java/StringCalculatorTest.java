@@ -29,8 +29,15 @@ class StringCalculatorTest {
     assertEquals(0, actual);
   }
 
-  //====
+  @Test
+  public void testStringNumberWithNewLine() {
+    int actual = calculator.Add("1\n2,3");
+    assertEquals(6, actual);
+  }
 
-
-
+  @Test
+  public void testInvalidStringNumberWithNewLine() {
+    int actual = calculator.Add("1,\n");
+    assertEquals(0, actual);
+  }
 }
