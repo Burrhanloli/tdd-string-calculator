@@ -1,11 +1,12 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class StringCalculator {
 
   public static void main(String[] args) {
     StringCalculator calculator = new StringCalculator();
-    int value = calculator.Add("1\n2,3");
+    int value = calculator.Add("//^^^\n1^^^2^^^90");
     System.out.println(value);
 
   }
@@ -14,9 +15,20 @@ public class StringCalculator {
     if (numbers == null || numbers.isEmpty()) {
       return 0;
     }
+
     String delimiters = ",";
+    String stringValue = "";
+    if (numbers.startsWith("//")) {
+      final String[] split = numbers.split("\n");
+      delimiters = handleMetaCharacters(split[0].substring(2));
+      for (int i = 1; i < split.length; i++) {
+        stringValue = stringValue.concat(split[i]);
+      }
+      numbers = stringValue;
+    }
+
     List<Integer> numberArray = new ArrayList<>();
-    if (!verifyAndAddToList(numbers, delimiters, numberArray)) {
+    if (!verifyAndAddToList(numbers, String.valueOf(delimiters), numberArray)) {
       return 0;
     }
     return numberArray.stream().reduce(0, Integer::sum);
@@ -28,7 +40,7 @@ public class StringCalculator {
       return false;
     }
     for (String s : split) {
-      if (s == null || s.isEmpty()) {
+      if (s.isEmpty()) {
         return false;
       }
       if (s.contains("\n")) {
@@ -41,12 +53,20 @@ public class StringCalculator {
         Integer parseInt = Integer.parseInt(s);
         numberArray.add(parseInt);
       } catch (Exception e) {
-        System.out.println("Not Valid");
         return false;
       }
     }
     return true;
   }
 
+  public String handleMetaCharacters(String delimiter) {
+    String s = delimiter;
+    String[] operators = new String[] {"+", "*", "^", "?"};
+    if (Arrays.stream(operators).anyMatch(s::contains)) {
+      String matchedDelimiter = Arrays.stream(operators).filter(s::contains).findFirst().get();
+      s = s.replace(matchedDelimiter, "\\".concat(matchedDelimiter));
+    }
+    return s;
+  }
 
 }

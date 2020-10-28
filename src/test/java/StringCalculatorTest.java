@@ -40,4 +40,39 @@ class StringCalculatorTest {
     int actual = calculator.Add("1,\n");
     assertEquals(0, actual);
   }
+
+  @Test
+  public void testInvalidStringNumberWithNull() {
+    int actual = calculator.Add("1,null");
+    assertEquals(0, actual);
+  }
+
+  @Test
+  public void testNewDelimiterString() {
+    int actual = calculator.Add("//:\n1:2:3");
+    assertEquals(6, actual);
+  }
+
+  @Test
+  public void testDelimiterString() {
+    int actual = calculator.Add("//;\n1;2;999");
+    assertEquals(1002, actual);
+  }
+
+  @Test
+  public void testDelimiterCanBeAnyLengthString() {
+    int actual = calculator.Add("//~~~\n1~~~2~~~90");
+    assertEquals(93, actual);
+  }
+
+  @Test
+  public void testRegexMetaDelimiterString() {
+    int actual = calculator.Add("//^\n1^5^90");
+    assertEquals(96, actual);
+  }
+  @Test
+  public void testRegexMetaDelimiterAnyLengthString() {
+    int actual = calculator.Add("//????\n1????90????90");
+    assertEquals(181, actual);
+  }
 }
