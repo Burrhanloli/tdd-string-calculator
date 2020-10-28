@@ -62,7 +62,7 @@ class StringCalculatorTest {
 
   @Test
   public void testDelimiterCanBeAnyLengthString() {
-    int actual = calculator.Add("//~~~\n1~~~2~~~90");
+    int actual = calculator.Add("//[~~~]\n1~~~2~~~90");
     assertEquals(93, actual);
   }
 
@@ -74,7 +74,7 @@ class StringCalculatorTest {
 
   @Test
   public void testRegexMetaDelimiterAnyLengthString() {
-    int actual = calculator.Add("//????\n1????90????90");
+    int actual = calculator.Add("//[????]\n1????90????90");
     assertEquals(181, actual);
   }
 
@@ -88,5 +88,11 @@ class StringCalculatorTest {
   public void testMultipleNegativeNumberString() {
     int actual = calculator.Add("-1,-90,90,78");
     assertEquals(-1, actual);
+  }
+
+  @Test
+  public void testNumberGreaterThan1000Ignored() {
+    int actual = calculator.Add("1,90,1000");
+    assertEquals(91, actual);
   }
 }

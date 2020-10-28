@@ -7,7 +7,7 @@ public class StringCalculator {
 
   public static void main(String[] args) {
     StringCalculator calculator = new StringCalculator();
-    int value = calculator.Add("1,-90,90");
+    int value = calculator.Add("1,1000,90");
     if (value != -1) {
       System.out.println(value);
     }
@@ -23,7 +23,7 @@ public class StringCalculator {
     String stringValue = "";
     if (numbers.startsWith("//")) {
       final String[] split = numbers.split("\n");
-      delimiters = handleMetaCharacters(split[0].substring(2));
+      delimiters = handleMetaCharacters(split[0].substring(2).replaceAll("[\\[\\]]", ""));
       numbers = getNumberString(stringValue, split);
     }
 
@@ -34,7 +34,7 @@ public class StringCalculator {
     if (!handleNegativeNumbers(numberArray)) {
       return -1;
     }
-    return numberArray.stream().reduce(0, Integer::sum);
+    return numberArray.stream().filter(i -> i > 0 && i < 1000).reduce(0, Integer::sum);
   }
 
   private boolean handleNegativeNumbers(List<Integer> numberArray) {
@@ -79,7 +79,9 @@ public class StringCalculator {
       }
       try {
         Integer parseInt = Integer.parseInt(s);
-        numberArray.add(parseInt);
+        if (parseInt < 1000) {
+          numberArray.add(parseInt);
+        }
       } catch (Exception e) {
         System.out.println(e.getMessage());
         return false;
