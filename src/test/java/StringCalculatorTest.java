@@ -11,6 +11,7 @@ class StringCalculatorTest {
     int actual = calculator.Add(null);
     assertEquals(0, actual);
   }
+
   @Test
   public void testEmptyString() {
     int actual = calculator.Add("");
@@ -26,7 +27,7 @@ class StringCalculatorTest {
   @Test
   public void testSimpleInvalidString() {
     int actual = calculator.Add("nullas");
-    assertEquals(0, actual);
+    assertEquals(-1, actual);
   }
 
   @Test
@@ -38,13 +39,13 @@ class StringCalculatorTest {
   @Test
   public void testInvalidStringNumberWithNewLine() {
     int actual = calculator.Add("1,\n");
-    assertEquals(0, actual);
+    assertEquals(-1, actual);
   }
 
   @Test
   public void testInvalidStringNumberWithNull() {
     int actual = calculator.Add("1,null");
-    assertEquals(0, actual);
+    assertEquals(-1, actual);
   }
 
   @Test
@@ -70,9 +71,22 @@ class StringCalculatorTest {
     int actual = calculator.Add("//^\n1^5^90");
     assertEquals(96, actual);
   }
+
   @Test
   public void testRegexMetaDelimiterAnyLengthString() {
     int actual = calculator.Add("//????\n1????90????90");
     assertEquals(181, actual);
+  }
+
+  @Test
+  public void testNegativeNumberString() {
+    int actual = calculator.Add("1,-90,90");
+    assertEquals(-1, actual);
+  }
+
+  @Test
+  public void testMultipleNegativeNumberString() {
+    int actual = calculator.Add("-1,-90,90,78");
+    assertEquals(-1, actual);
   }
 }
