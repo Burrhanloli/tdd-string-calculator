@@ -28,12 +28,7 @@ public class StringCalculator {
     if (numbers.startsWith("//")) {
       final String[] split = numbers.split("\n");
       if (Pattern.compile(REGEX).matcher(numbers).find()) {
-        StringJoiner joiner = new StringJoiner("|");
-        Matcher m = Pattern.compile(REGEX).matcher(numbers);
-        while (m.find()) {
-          joiner.add(handleMetaCharacters(m.group(1)));
-          delimiter = joiner.toString();
-        }
+        delimiter = getJoinedDelimiters(numbers);
       } else {
         delimiter = handleMetaCharacters(split[0].substring(2));
       }
@@ -48,6 +43,15 @@ public class StringCalculator {
       return -1;
     }
     return numberArray.stream().filter(i -> i > 0 && i < 1000).reduce(0, Integer::sum);
+  }
+
+  private String getJoinedDelimiters(String numbers) {
+    StringJoiner joiner = new StringJoiner("|");
+    Matcher m = Pattern.compile(REGEX).matcher(numbers);
+    while (m.find()) {
+      joiner.add(handleMetaCharacters(m.group(1)));
+    }
+    return joiner.toString();
   }
 
   private boolean handleNegativeNumbers(List<Integer> numberArray) {
