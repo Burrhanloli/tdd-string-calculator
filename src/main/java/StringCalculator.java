@@ -6,13 +6,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+
+//NOTE: cannot use "]" as delimiter
+
 public class StringCalculator {
 
   public static final String REGEX = "\\[(.*?)\\]";
 
   public static void main(String[] args) {
     StringCalculator calculator = new StringCalculator();
-    int value = calculator.Add("//[????][~~~]\n1????90~~~90");
+    int value = calculator.Add("//[\\][~~~]\n1\\90~~~90");
     if (value != -1) {
       System.out.println(value);
     }
@@ -110,7 +113,7 @@ public class StringCalculator {
 
   public String handleMetaCharacters(String delimiter) {
     String s = delimiter;
-    String[] operators = new String[] {"+", "*", "^", "?", "|"};
+    String[] operators = new String[] {"+", "*", "^", "?", "|", "{", "}", "$", "[","\\"};
     if (Arrays.stream(operators).anyMatch(s::contains)) {
       String matchedDelimiter = Arrays.stream(operators).filter(s::contains).findFirst().get();
       s = s.replace(matchedDelimiter, "\\".concat(matchedDelimiter));
