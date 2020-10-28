@@ -50,7 +50,7 @@ class StringCalculatorTest {
 
   @Test
   public void testNewDelimiterString() {
-    int actual = calculator.Add("//:\n1:2:3");
+    int actual = calculator.Add("//|\n1|2|3");
     assertEquals(6, actual);
   }
 
@@ -95,4 +95,29 @@ class StringCalculatorTest {
     int actual = calculator.Add("1,90,1000");
     assertEquals(91, actual);
   }
+
+  @Test
+  public void testMultipleDelimiterString() {
+    int actual = calculator.Add("//[|][~]\n1|90~90");
+    assertEquals(181, actual);
+  }
+
+  @Test
+  public void testMultipleDelimiterAnyLengthString() {
+    int actual = calculator.Add("//[????][~]\n1????90~90");
+    assertEquals(181, actual);
+  }
+
+  @Test
+  public void testMultipleRegexMetaDelimiterString() {
+    int actual = calculator.Add("//[?][^]\n1?90^90");
+    assertEquals(181, actual);
+  }
+
+  @Test
+  public void testMultipleRegexMetaDelimiterAnyLengthString() {
+    int actual = calculator.Add("//[???][^^^][***]\n1???90^^^90***100");
+    assertEquals(281, actual);
+  }
+
 }

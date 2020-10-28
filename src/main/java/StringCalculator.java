@@ -1,13 +1,18 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class StringCalculator {
 
+  public static final String REGEX = "\\[(.*?)\\]";
+
   public static void main(String[] args) {
     StringCalculator calculator = new StringCalculator();
-    int value = calculator.Add("1,1000,90");
+    int value = calculator.Add("//[????][~~~]\n1????90~~~90");
     if (value != -1) {
       System.out.println(value);
     }
@@ -19,16 +24,24 @@ public class StringCalculator {
       return 0;
     }
 
-    String delimiters = ",";
-    String stringValue = "";
+    String delimiter = ",";
     if (numbers.startsWith("//")) {
       final String[] split = numbers.split("\n");
-      delimiters = handleMetaCharacters(split[0].substring(2).replaceAll("[\\[\\]]", ""));
-      numbers = getNumberString(stringValue, split);
+      if (Pattern.compile(REGEX).matcher(numbers).find()) {
+        StringJoiner joiner = new StringJoiner("|");
+        Matcher m = Pattern.compile(REGEX).matcher(numbers);
+        while (m.find()) {
+          joiner.add(handleMetaCharacters(m.group(1)));
+          delimiter = joiner.toString();
+        }
+      } else {
+        delimiter = handleMetaCharacters(split[0].substring(2));
+      }
+      numbers = getNumberString(split);
     }
 
     List<Integer> numberArray = new ArrayList<>();
-    if (!verifyAndAddToList(numbers, String.valueOf(delimiters), numberArray)) {
+    if (!verifyAndAddToList(numbers, String.valueOf(delimiter), numberArray)) {
       return -1;
     }
     if (!handleNegativeNumbers(numberArray)) {
@@ -55,7 +68,8 @@ public class StringCalculator {
     return true;
   }
 
-  private String getNumberString(String stringValue, String[] split) {
+  private String getNumberString(String[] split) {
+    String stringValue = "";
     for (int i = 1; i < split.length; i++) {
       stringValue = stringValue.concat(split[i]);
     }
@@ -92,7 +106,7 @@ public class StringCalculator {
 
   public String handleMetaCharacters(String delimiter) {
     String s = delimiter;
-    String[] operators = new String[] {"+", "*", "^", "?"};
+    String[] operators = new String[] {"+", "*", "^", "?", "|"};
     if (Arrays.stream(operators).anyMatch(s::contains)) {
       String matchedDelimiter = Arrays.stream(operators).filter(s::contains).findFirst().get();
       s = s.replace(matchedDelimiter, "\\".concat(matchedDelimiter));
